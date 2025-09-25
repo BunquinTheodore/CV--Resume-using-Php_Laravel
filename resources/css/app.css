@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f9;
+    margin: 0;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+}
+.resume-container {
+    background: #fff;
+    width: 800px; /* about A4 width */
+    min-height: 1100px; /* about A4 height */
+    padding: 40px 60px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.15);
+    border-radius: 6px;
+}
+h1, h2, h3 {
+    margin-bottom: 5px;
+}
+h1 {
+    font-size: 28px;
+    color: #1a237e;
+}
+h2 {
+    font-size: 20px;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 4px;
+    margin-top: 30px;
+}
+.section {
+    margin-bottom: 20px;
+}
+ul {
+    margin: 0;
+    padding-left: 20px;
+}
+.contact {
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+.job-title {
+    font-weight: bold;
+    color: #0d47a1;
+}
