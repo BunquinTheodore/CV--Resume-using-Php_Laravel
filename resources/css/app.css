@@ -1,49 +1,64 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f9;
-    margin: 0;
-    padding: 30px;
-    display: flex;
-    justify-content: center;
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
-.resume-container {
-    background: #fff;
-    width: 800px; /* about A4 width */
-    min-height: 1100px; /* about A4 height */
-    padding: 40px 60px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.15);
-    border-radius: 6px;
+
+.login-container {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 320px;
+  text-align: center;
 }
-h1, h2, h3 {
-    margin-bottom: 5px;
+
+.login-container h2 {
+  margin-bottom: 20px;
+  color: #333;
 }
-h1 {
-    font-size: 28px;
-    color: #1a237e;
+
+.input-group {
+  margin-bottom: 15px;
+  text-align: left;
 }
-h2 {
-    font-size: 20px;
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 4px;
-    margin-top: 30px;
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
 }
-.section {
-    margin-bottom: 20px;
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
 }
-ul {
-    margin: 0;
-    padding-left: 20px;
+
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #007bff;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
 }
-.contact {
-    margin-bottom: 20px;
-    font-size: 14px;
-}
-.job-title {
-    font-weight: bold;
-    color: #0d47a1;
+
+button:hover {
+  background: #0056b3;
 }

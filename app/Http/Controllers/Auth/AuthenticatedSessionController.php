@@ -3,45 +3,51 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
-    public function create(): View
+    public function store(Request $request)
     {
-        return view('auth.login');
+        $username = trim($request->input('username'));
+        $password = trim($request->input('password'));
+
+        // Validate inputs
+        if (empty($username) || empty($password)) {
+            return back()->with([
+                'message' => 'All fields are required!',
+                'type' => 'error'
+            ]);
+        }
+
+        // Basic login check
+        if ($username === 'admin' && $password === '1234') {
+
+            // ✅ Store login info in session
+            $request->session()->put('logged_in', true);
+            $request->session()->put('username', $username);
+
+            // ✅ Redirect to resume edit page
+            return redirect('/resume/edit')->with([
+                'message' => 'Login Successful',
+                'type' => 'success'
+            ]);
+        }
+
+        // Invalid credentials
+        return back()->with([
+            'message' => 'Invalid Username or Password',
+            'type' => 'error'
+        ]);
     }
 
-    /**
-     * Handle an incoming authentication request.
-     */
-    public function store(LoginRequest $request): RedirectResponse
+    // ✅ Optional: logout function
+    public function destroy(Request $request)
     {
-        $request->authenticate();
-
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard', absolute: false));
-    }
-
-    /**
-     * Destroy an authenticated session.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/');
+        $request->session()->flush(); // clear all session data
+        return redirect('/')->with([
+            'message' => 'You have been logged out successfully.',
+            'type' => 'success'
+        ]);
     }
 }
