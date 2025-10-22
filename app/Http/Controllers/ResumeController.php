@@ -3,95 +3,106 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Resume;
 
 class ResumeController extends Controller
 {
-    // ✅ Path to store JSON data
-    private $filePath = 'data/resume.json';
-
-    // ✅ Load resume data from file
-    private function loadResumeData()
-    {
-        if (Storage::exists($this->filePath)) {
-            return json_decode(Storage::get($this->filePath), true);
-        }
-
-        // Default data if JSON file not found
-        return [
-            'name' => 'THEODORE VON JOSHUA M. BUNQUIN',
-            'address' => 'Alangilan, Batangas',
-            'email' => 'bunquintheodore@gmail.com',
-            'phone' => '(+63) 966 02 5692',
-            'headline' => 'Creative AI Developer & Digital Content Specialist',
-            'summary' => 'Passionate about delivering innovative, tech-driven solutions that captivate and engage.',
-            'expertise' => ['Prompt Engineering', 'Programming', 'AI-Powered Development', 'Web Development'],
-            'achievement1' => 'Designed and launched EduManageX, a Java-based School Management System with SQL integration.',
-            'achievement2' => 'Built a Maze Solver in C++ using data structures and algorithmic logic.',
-            'experience' => '<p class="job-title">Freelance Developer & Content Specialist | Self-Employed | 2025 - Present</p>
-                             <ul>
-                                 <li>Delivered websites, content, and social media visuals for diverse clients.</li>
-                                 <li>Provided virtual assistance, graphic design, and creative support.</li>
-                             </ul>',
-            'education' => '<p><b>Bachelor of Science in Computer Science</b> | National Engineering University, Philippines | Aug 2023 – 2027</p>',
-            'additional' => '<ul>
-                                <li><b>Languages:</b> English, Filipino</li>
-                                <li><b>Certifications:</b> Python Programming (CodeAlpha Internship)</li>
-                                <li><b>Awards/Activities:</b> AI Vibe Coding Competition Participant (2025)</li>
-                             </ul>',
-        ];
-    }
-
-    // ✅ Save resume data to file
-    private function saveResumeData($data)
-    {
-        Storage::put($this->filePath, json_encode($data, JSON_PRETTY_PRINT));
-    }
-
-    // ✅ Anyone can view resume
+    /**
+     * ✅ Public view - anyone can see the resume
+     */
     public function view()
     {
-        $resume = (object) $this->loadResumeData();
+        // Get the first (and only) resume from database
+        $resume = Resume::firstOrFail();
+        
         return view('resume.view', compact('resume'));
     }
 
-    // ✅ Authenticated users can edit resume
+    /**
+     * ✅ Edit page - requires authentication
+     */
     public function edit(Request $request)
     {
-        if (!$request->session()->has('logged_in') && !$request->session()->has('user_logged_in')) {
-            return redirect('/login')->with([
-                'message' => 'Please log in first.',
-                'type' => 'error'
+        // Check if user is authenticated
+        if (!session('user_logged_in') && !Auth::check()) {
+            return redirect()->route('login.form')->with([
+                'error' => 'Please log in to edit the resume.'
             ]);
         }
 
-        $resume = (object) $this->loadResumeData();
+        // Get the resume from database
+        $resume = Resume::firstOrFail();
+        
         return view('resume.edit', compact('resume'));
     }
 
-    // ✅ Update resume data and save
-    public function update(Request $request)
+    /**
+     * ✅ Update and publish resume
+     */
+    public function update(Request $request, $id = null)
     {
+        // Validate input
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:50',
+            'headline' => 'nullable|string|max:255',
+            'summary' => 'nullable|string',
+            'expertise' => 'nullable|array',
+            'expertise.*' => 'string|max:255',
+            'achievements' => 'nullable|array',
+            'achievements.*.title' => 'required|string|max:255',
+            'achievements.*.description' => 'required|string',
+            'experience' => 'nullable|string',
+            'education' => 'nullable|string',
+            'additional' => 'nullable|string',
+        ]);
+
+        // Get the resume (first record)
+        $resume = Resume::firstOrFail();
+
+        // Prepare data for saving
         $data = [
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'phone' => $request->input('phone'),
-            'headline' => $request->input('headline'),
-            'summary' => $request->input('summary'),
-            'experience' => $request->input('experience'),
-            'education' => $request->input('education'),
-            'additional' => $request->input('additional'),
+            'name' => $validated['name'],
+            'address' => $validated['address'] ?? '',
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? '',
+            'headline' => $validated['headline'] ?? '',
+            'summary' => $validated['summary'] ?? '',
+            'expertise' => array_values(array_filter($validated['expertise'] ?? [])), // Remove empty values and reindex
+            'achievements' => array_values(array_filter($validated['achievements'] ?? [], function($achievement) {
+                return !empty($achievement['title']) && !empty($achievement['description']);
+            })), // Remove empty achievements and reindex
+            'experience' => $validated['experience'] ?? '',
+            'education' => $validated['education'] ?? '',
+            'additional' => $validated['additional'] ?? '',
+            'is_published' => true,
         ];
 
-        $this->saveResumeData($data);
+        // Update the resume in database
+        $resume->update($data);
 
-        return redirect()->route('resume.view')->with('success', 'Resume updated successfully!');
+        // Log out the user
+        if (Auth::check()) {
+            Auth::logout();
+        }
+        
+        // Clear session
+        $request->session()->forget('user_logged_in');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Redirect to public view with success message
+        return redirect()->route('resume.view')->with('success', 'Resume published successfully! You have been logged out.');
     }
 
-    // ✅ Optional: show specific resume by ID (for future use)
-    public function show($id)
+    /**
+     * ✅ Optional: specific resume view (for future expansion)
+     */
+    public function show($id = null)
     {
-        $resume = (object) $this->loadResumeData();
-        return view('resume.view', compact('resume'));
+        return $this->view();
     }
 }
