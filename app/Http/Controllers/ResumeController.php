@@ -9,6 +9,18 @@ use App\Models\Resume;
 class ResumeController extends Controller
 {
     /**
+     * ✅ Dashboard - show all published resumes
+     */
+    public function dashboard()
+    {
+        $resumes = Resume::where('is_published', true)
+            ->orderBy('updated_at', 'desc')
+            ->get();
+        
+        return view('dashboard', compact('resumes'));
+    }
+
+    /**
      * ✅ Public view - anyone can see the resume
      */
     public function view()
@@ -31,8 +43,35 @@ class ResumeController extends Controller
             ]);
         }
 
-        // Get the resume from database
-        $resume = Resume::firstOrFail();
+        // Get or create user's resume
+        $user = Auth::user();
+        
+        // If admin (session-based), get the first resume
+        if (session('user_logged_in') && session('username') === 'admin') {
+            $resume = Resume::first();
+            if (!$resume) {
+                // Create default resume for admin
+                $resume = Resume::create([
+                    'user_id' => null,
+                    'name' => 'Your Name',
+                    'email' => 'your.email@example.com',
+                    'is_published' => false,
+                ]);
+            }
+        } else {
+            // For authenticated users, get or create their resume
+            $resume = Resume::where('user_id', $user->id)->first();
+            
+            if (!$resume) {
+                // Create a new blank resume for the user
+                $resume = Resume::create([
+                    'user_id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'is_published' => false,
+                ]);
+            }
+        }
         
         return view('resume.edit', compact('resume'));
     }
@@ -60,8 +99,16 @@ class ResumeController extends Controller
             'additional' => 'nullable|string',
         ]);
 
-        // Get the resume (first record)
-        $resume = Resume::firstOrFail();
+        // Get the user's resume
+        $user = Auth::user();
+        
+        if (session('user_logged_in') && session('username') === 'admin') {
+            // Admin updates the first resume
+            $resume = Resume::first();
+        } else {
+            // Regular user updates their own resume
+            $resume = Resume::where('user_id', $user->id)->firstOrFail();
+        }
 
         // Prepare data for saving
         $data = [
@@ -94,15 +141,31 @@ class ResumeController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Redirect to public view with success message
-        return redirect()->route('resume.view')->with('success', 'Resume published successfully! You have been logged out.');
+        // Redirect to dashboard with success message
+        return redirect()->route('dashboard')->with('success', 'Resume published successfully! You have been logged out.');
     }
 
     /**
-     * ✅ Optional: specific resume view (for future expansion)
+     * ✅ Show specific resume by ID
      */
-    public function show($id = null)
+    public function show($id)
     {
-        return $this->view();
+        $resume = Resume::where('id', $id)
+            ->where('is_published', true)
+            ->firstOrFail();
+        
+        return view('resume.view', compact('resume'));
+    }
+
+    /**
+     * ✅ Print specific resume by ID
+     */
+    public function print($id)
+    {
+        $resume = Resume::where('id', $id)
+            ->where('is_published', true)
+            ->firstOrFail();
+        
+        return view('resume.view', compact('resume'));
     }
 }

@@ -20,11 +20,8 @@ Route::middleware(['web'])->group(function () {
     // 🏠 PUBLIC ROUTES (No Authentication)
     // ====================================
     
-    // ✅ Home page - Public resume view (anyone can see)
-    Route::get('/', [ResumeController::class, 'view'])->name('resume.view');
-    
-    // ✅ Alternative public resume view route
-    Route::get('/resume/view', [ResumeController::class, 'view'])->name('resume.view.alt');
+    // ✅ Home page - Dashboard showing all resumes
+    Route::get('/', [ResumeController::class, 'dashboard'])->name('dashboard');
 
 
     // ====================================
@@ -91,6 +88,41 @@ Route::middleware(['web'])->group(function () {
         }
     });
 
+    // ✅ Registration route
+    Route::post('/register', function (Request $request) {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:6|confirmed',
+            ]);
+
+            // Create new user
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => bcrypt($validated['password']),
+            ]);
+
+            // Log the user in
+            Auth::login($user);
+
+            // Regenerate session to prevent fixation
+            $request->session()->regenerate();
+
+            // Mark session as logged in
+            $request->session()->put('logged_in', true);
+            $request->session()->put('user_logged_in', true);
+            $request->session()->put('username', $user->name);
+
+            return redirect()->route('resume.edit')->with('success', 'Account created successfully! Start building your resume.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            return back()->with('error', 'Registration failed: ' . $e->getMessage())->withInput();
+        }
+    })->name('register');
+
     // ✅ Logout route
     Route::post('/logout', function (Request $request) {
         // Logout from Laravel Auth if using Google login
@@ -102,7 +134,7 @@ Route::middleware(['web'])->group(function () {
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         
-        return redirect()->route('resume.view')->with('success', 'Logged out successfully!');
+        return redirect()->route('dashboard')->with('success', 'Logged out successfully!');
     })->name('logout');
 
 
@@ -119,12 +151,15 @@ Route::middleware(['web'])->group(function () {
         Route::match(['post', 'put'], '/resume/update/{id?}', [ResumeController::class, 'update'])->name('resume.update');
     });
 
+
     // ====================================
-    // ⚠️ DYNAMIC ROUTES (Must be LAST)
+    // 📄 DYNAMIC RESUME ROUTES (Must be LAST)
     // ====================================
     
-    // ✅ Resume by ID (for dynamic viewing - optional)
-    // IMPORTANT: This must come AFTER /resume/edit to avoid conflicts
-    Route::get('/resume/{id}', [ResumeController::class, 'show'])->name('resume.show');
+    // ✅ View specific resume by ID
+    Route::get('/resume/{id}', [ResumeController::class, 'show'])->name('resume.show')->where('id', '[0-9]+');
+    
+    // ✅ Print specific resume by ID
+    Route::get('/resume/{id}/print', [ResumeController::class, 'print'])->name('resume.print')->where('id', '[0-9]+');
 
 });

@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>{{ $resume->name ?? 'Resume' }}</title>
     <style>
         * {
@@ -131,6 +134,35 @@
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
             background: #667eea;
             color: white;
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: #111827;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+            z-index: 100;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95em;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+            background: #374151;
         }
         
         /* Header */
@@ -330,21 +362,37 @@
         
         /* Print Styles */
         @media print {
+            @page {
+                size: A4;
+                margin: 15mm;
+            }
+            
             body {
                 background: white;
                 padding: 0;
+                margin: 0;
             }
             
             body::before {
                 display: none;
             }
             
+            .wrapper {
+                max-width: 100%;
+            }
+            
             .resume-container {
                 box-shadow: none;
-                padding: 40px;
+                padding: 20px;
+                min-height: auto;
+                border-radius: 0;
+                page-break-inside: avoid;
             }
             
             .login-btn {
+                display: none;
+            }
+            .print-btn {
                 display: none;
             }
             
@@ -352,19 +400,98 @@
                 display: none;
             }
             
+            .resume-header {
+                padding-bottom: 15px;
+                margin-bottom: 20px;
+            }
+            
+            h1 {
+                font-size: 26px;
+                margin-bottom: 8px;
+            }
+            
             h2 {
                 background: none;
                 color: #1e293b;
-                border-bottom: 3px solid #667eea;
+                border-bottom: 2px solid #667eea;
                 box-shadow: none;
+                font-size: 18px;
+                padding: 8px 0;
+                margin-bottom: 12px;
+                margin-top: 15px;
+            }
+            
+            h3 {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+            
+            .contact {
+                font-size: 13px;
+                margin-bottom: 10px;
+            }
+            
+            .summary {
+                padding: 12px;
+                margin-bottom: 20px;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            
+            .section {
+                margin-bottom: 18px;
+                page-break-inside: avoid;
+            }
+            
+            .expertise-list {
+                gap: 8px;
+                margin-top: 10px;
             }
             
             .expertise-tag {
                 box-shadow: none;
+                padding: 6px 14px;
+                font-size: 12px;
+                background: #e5e7eb;
+                color: #1e293b;
             }
             
             .achievement-item {
                 box-shadow: none;
+                padding: 12px;
+                margin-bottom: 12px;
+                page-break-inside: avoid;
+            }
+            
+            .achievement-item strong {
+                font-size: 14px;
+            }
+            
+            .formatted-text {
+                padding: 10px;
+                font-size: 13px;
+                line-height: 1.6;
+            }
+            
+            ul {
+                padding-left: 20px;
+                line-height: 1.6;
+            }
+            
+            ul li {
+                margin-bottom: 6px;
+                font-size: 13px;
+            }
+            
+            .job-title {
+                font-size: 14px;
+                margin-bottom: 6px;
+            }
+            
+            .updated-timestamp {
+                margin-top: 20px;
+                padding-top: 15px;
+                font-size: 11px;
             }
         }
         
@@ -395,6 +522,13 @@
                 font-size: 0.9em;
             }
             
+            .print-btn {
+                top: 15px;
+                left: 15px;
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+            
             .contact {
                 flex-direction: column;
                 align-items: flex-start;
@@ -414,7 +548,8 @@
 </head>
 <body>
 
-<a href="{{ route('login.form') }}" class="login-btn">🔐 Login to Edit</a>
+<a href="{{ route('dashboard') }}" class="login-btn">🏠 Back to Dashboard</a>
+<button type="button" class="print-btn" onclick="window.print()">🖨️ Print</button>
 
 <div class="wrapper">
     @if(session('success'))

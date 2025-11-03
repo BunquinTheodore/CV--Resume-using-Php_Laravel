@@ -18,10 +18,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-    'fullname',
-    'skills',
-    'education',
-    'experience',
+    'name',
     'email',
     'password',
 ];
@@ -48,5 +45,21 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the resumes for the user.
+     */
+    public function resumes()
+    {
+        return $this->hasMany(Resume::class);
+    }
+
+    /**
+     * Get the user's primary resume.
+     */
+    public function resume()
+    {
+        return $this->hasOne(Resume::class)->latest();
     }
 }

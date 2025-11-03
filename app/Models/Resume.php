@@ -13,6 +13,7 @@ class Resume extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
+        'user_id',
         'name',
         'address',
         'email',
@@ -42,5 +43,13 @@ class Resume extends Model
     public function getLastUpdatedAttribute()
     {
         return $this->updated_at->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * Get the user that owns the resume.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

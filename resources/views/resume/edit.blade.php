@@ -536,7 +536,7 @@
         
         <!-- Actions -->
         <div class="actions">
-            <a href="{{ route('resume.view') }}" class="btn btn-secondary">Cancel</a>
+            <a href="{{ route('dashboard') }}" class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-primary">📢 Publish Resume</button>
         </div>
     </form>
