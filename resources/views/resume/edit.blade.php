@@ -14,7 +14,7 @@
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%);
             min-height: 100vh;
             padding: 40px 20px;
             position: relative;
@@ -63,7 +63,7 @@
         }
         
         h1 {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -96,7 +96,7 @@
             font-size: 1.6em;
             margin-bottom: 25px;
             padding-left: 20px;
-            border-left: 5px solid #667eea;
+            border-left: 5px solid #06b6d4;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -118,6 +118,7 @@
         
         input[type="text"],
         input[type="email"],
+        input[type="file"],
         textarea {
             width: 100%;
             padding: 14px 18px;
@@ -129,12 +130,17 @@
             background: #f8fafc;
         }
         
+        input[type="file"] {
+            padding: 12px;
+            cursor: pointer;
+        }
+        
         input:focus,
         textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #06b6d4;
             background: white;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.1);
             transform: translateY(-1px);
         }
         
@@ -274,14 +280,14 @@
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
         }
         
         .btn-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.5);
         }
         
         .btn-secondary {
@@ -302,7 +308,7 @@
             top: 30px;
             right: 30px;
             background: rgba(255, 255, 255, 0.95);
-            color: #667eea;
+            color: #06b6d4;
             border: none;
             padding: 12px 28px;
             border-radius: 30px;
@@ -346,7 +352,7 @@
             justify-content: center;
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: white;
             border-radius: 50%;
             font-size: 0.85em;
@@ -403,12 +409,29 @@
         <p class="subtitle">Update your information and click "Publish Resume" to save changes and make them live</p>
     </div>
     
-    <form method="POST" action="{{ route('resume.update', $resume->id ?? 1) }}" id="resumeForm">
+    <form method="POST" action="{{ route('resume.update', $resume->id ?? 1) }}" id="resumeForm" enctype="multipart/form-data">
         @csrf
         
         <!-- Basic Information -->
         <div class="form-section">
             <h2><span class="section-number">1</span> Basic Information</h2>
+            
+            <div class="form-group">
+                <label for="photo">Profile Photo *</label>
+                <input type="file" id="photo" name="photo" accept="image/*" 
+                       {{ empty($resume->photo) ? 'required' : '' }}>
+                @if(!empty($resume->photo))
+                    <div style="margin-top: 10px;">
+                        <img src="{{ $resume->photo }}" alt="Current Photo" 
+                             style="width: 120px; height: 120px; object-fit: cover; border-radius: 12px; border: 3px solid #06b6d4;">
+                        <p class="helper-text">Current photo (upload a new one to replace)</p>
+                    </div>
+                @endif
+                <div class="helper-text">Upload a professional headshot (JPG, PNG, or GIF - max 2MB)</div>
+                @error('photo')
+                    <div class="error-message">{{ $message }}</div>
+                @enderror
+            </div>
             
             <div class="form-group">
                 <label for="name">Full Name *</label>

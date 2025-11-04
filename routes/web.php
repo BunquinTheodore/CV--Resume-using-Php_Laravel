@@ -20,8 +20,13 @@ Route::middleware(['web'])->group(function () {
     // 🏠 PUBLIC ROUTES (No Authentication)
     // ====================================
     
-    // ✅ Home page - Dashboard showing all resumes
-    Route::get('/', [ResumeController::class, 'dashboard'])->name('dashboard');
+    // ✅ Landing page - Home
+    Route::get('/', function () {
+        return view('landing');
+    })->name('home');
+    
+    // ✅ Dashboard - showing all resumes and templates
+    Route::get('/dashboard', [ResumeController::class, 'dashboard'])->name('dashboard');
 
 
     // ====================================

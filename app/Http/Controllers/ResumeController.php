@@ -83,6 +83,7 @@ class ResumeController extends Controller
     {
         // Validate input
         $validated = $request->validate([
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'name' => 'required|string|max:255',
             'address' => 'nullable|string|max:255',
             'email' => 'required|email|max:255',
@@ -110,8 +111,24 @@ class ResumeController extends Controller
             $resume = Resume::where('user_id', $user->id)->firstOrFail();
         }
 
+        // Handle photo upload
+        $photoPath = $resume->photo; // Keep existing photo by default
+        if ($request->hasFile('photo')) {
+            // Delete old photo if exists
+            if ($resume->photo && file_exists(public_path($resume->photo))) {
+                unlink(public_path($resume->photo));
+            }
+            
+            // Store new photo
+            $photo = $request->file('photo');
+            $photoName = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
+            $photo->move(public_path('uploads/photos'), $photoName);
+            $photoPath = '/uploads/photos/' . $photoName;
+        }
+        
         // Prepare data for saving
         $data = [
+            'photo' => $photoPath,
             'name' => $validated['name'],
             'address' => $validated['address'] ?? '',
             'email' => $validated['email'],

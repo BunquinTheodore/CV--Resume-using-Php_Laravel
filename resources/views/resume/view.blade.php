@@ -16,7 +16,7 @@
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%);
             min-height: 100vh;
             padding: 40px 20px;
             display: flex;
@@ -114,7 +114,7 @@
             top: 30px;
             right: 30px;
             background: white;
-            color: #667eea;
+            color: #06b6d4;
             padding: 14px 32px;
             border-radius: 30px;
             text-decoration: none;
@@ -132,7 +132,7 @@
         .login-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-            background: #667eea;
+            background: #06b6d4;
             color: white;
         }
 
@@ -168,7 +168,7 @@
         /* Header */
         .resume-header {
             border-bottom: 4px solid transparent;
-            border-image: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-image: linear-gradient(90deg, #06b6d4 0%, #0891b2 100%);
             border-image-slice: 1;
             padding-bottom: 25px;
             margin-bottom: 35px;
@@ -176,7 +176,7 @@
         
         h1 {
             font-size: 38px;
-            background: linear-gradient(135deg, #1a237e 0%, #667eea 100%);
+            background: linear-gradient(135deg, #0e7490 0%, #06b6d4 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -203,20 +203,20 @@
         }
         
         .contact a {
-            color: #667eea;
+            color: #06b6d4;
             text-decoration: none;
             font-weight: 600;
             transition: color 0.2s ease;
         }
         
         .contact a:hover {
-            color: #764ba2;
+            color: #0891b2;
             text-decoration: underline;
         }
         
         h3 {
             font-size: 20px;
-            color: #764ba2;
+            color: #0891b2;
             margin-bottom: 15px;
             font-weight: 700;
             letter-spacing: 0.3px;
@@ -228,9 +228,9 @@
             margin-bottom: 35px;
             font-size: 15.5px;
             padding: 20px;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
             border-radius: 12px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #06b6d4;
         }
         
         /* Sections */
@@ -245,11 +245,11 @@
             padding: 12px 20px;
             margin-bottom: 20px;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: white;
             border-radius: 10px;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
         }
         
         ul {
@@ -265,7 +265,7 @@
         }
         
         ul li::marker {
-            color: #667eea;
+            color: #06b6d4;
             font-weight: bold;
         }
         
@@ -285,20 +285,20 @@
         }
         
         .expertise-tag {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: white;
             padding: 10px 22px;
             border-radius: 25px;
             font-size: 14px;
             font-weight: 600;
-            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 3px 10px rgba(6, 182, 212, 0.3);
             transition: all 0.3s ease;
             letter-spacing: 0.3px;
         }
         
         .expertise-tag:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.4);
         }
         
         /* Achievements */
@@ -306,8 +306,8 @@
             margin-bottom: 20px;
             padding: 20px;
             padding-left: 25px;
-            border-left: 4px solid #764ba2;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-left: 4px solid #0891b2;
+            background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
             border-radius: 8px;
             transition: all 0.3s ease;
         }
@@ -413,7 +413,7 @@
             h2 {
                 background: none;
                 color: #1e293b;
-                border-bottom: 2px solid #667eea;
+                border-bottom: 2px solid #06b6d4;
                 box-shadow: none;
                 font-size: 18px;
                 padding: 8px 0;
@@ -452,8 +452,8 @@
                 box-shadow: none;
                 padding: 6px 14px;
                 font-size: 12px;
-                background: #e5e7eb;
-                color: #1e293b;
+                background: #ccfbf1;
+                color: #0e7490;
             }
             
             .achievement-item {
@@ -561,6 +561,12 @@
     <div class="resume-container">
         <!-- Header -->
         <div class="resume-header">
+            @if($resume->photo)
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <img src="{{ $resume->photo }}" alt="{{ $resume->name }}" 
+                         style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 5px solid #06b6d4; box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);">
+                </div>
+            @endif
             <h1>{{ $resume->name ?? 'THEODORE VON JOSHUA M. BUNQUIN' }}</h1>
             <div class="contact">
                 <span class="contact-item">📍 {{ $resume->address ?? 'Alangilan, Batangas' }}</span>

@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -31,7 +31,7 @@
         }
         
         h1 {
-            color: #667eea;
+            color: #06b6d4;
             font-size: 2.2em;
             margin-bottom: 10px;
             text-align: center;
@@ -69,7 +69,7 @@
         
         input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #06b6d4;
         }
         
         .alert {
@@ -103,13 +103,13 @@
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: white;
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
         }
         
         .btn-google {
@@ -125,7 +125,7 @@
         
         .btn-google:hover {
             background: #f8f9fa;
-            border-color: #667eea;
+            border-color: #06b6d4;
         }
         
         .google-icon {
@@ -157,7 +157,7 @@
             display: block;
             text-align: center;
             margin-top: 20px;
-            color: #667eea;
+            color: #06b6d4;
             text-decoration: none;
             font-weight: 600;
             font-size: 0.95em;
@@ -195,12 +195,12 @@
         }
         
         .tab.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
+            color: #06b6d4;
+            border-bottom-color: #06b6d4;
         }
         
         .tab:hover {
-            color: #667eea;
+            color: #06b6d4;
         }
         
         .tab-content {
@@ -212,12 +212,12 @@
         }
         
         .register-note {
-            background: #f0f7ff;
-            border: 1px solid #667eea;
+            background: #f0fdfa;
+            border: 1px solid #06b6d4;
             border-radius: 8px;
             padding: 12px;
             margin-bottom: 20px;
-            color: #1e40af;
+            color: #0e7490;
             font-size: 0.9em;
         }
         
